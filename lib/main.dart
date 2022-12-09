@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +40,7 @@ class _OracleDemoState extends State<OracleDemo> {
   int currentPageIndex = 0;
   String url = 'http://192.168.1.3/api/frames';
 
-  Uint8List r8 = Uint8List.fromList([]);
-  Uint8List ulist8 = Uint8List(1728);
-  List<int> frame = [];
-  bool imgCheck = false;
-  List<List<int>> img = [];
+  List<List<int>> sensors = [];
 
   void getFrame() async {
     var response = await http.get(Uri.parse(url));
@@ -56,19 +51,11 @@ class _OracleDemoState extends State<OracleDemo> {
     Frame r = frameFromJson(parse3);
 
     setState(() {
-      frame = r.readings.map((e) => (e * 255 / 100).round()).toList();
-      r8 = Uint8List.fromList(frame);
+      List<int> frame = r.readings.map((e) => (e * 255 / 100).round()).toList();
 
-      // ignore: unnecessary_null_comparison
-      if (r8 == null) {
-        imgCheck = false;
-      } else {
-        imgCheck = true;
-      }
-
-      for (var i = 0; i < r8.length; i += w.round()) {
-        img.add(frame.sublist(
-            i, i + w.round() > r8.length ? r8.length : i + w.round()));
+      for (var i = 0; i < frame.length; i += w.round()) {
+        sensors.add(frame.sublist(
+            i, i + w.round() > frame.length ? frame.length : i + w.round()));
       }
     });
   }
@@ -108,16 +95,9 @@ class _OracleDemoState extends State<OracleDemo> {
         ],
       ),
       body: <Widget>[
-        Container(
-            alignment: Alignment.center,
-            child: CustomPaint(
-              painter: SensorPainter(img),
-            )
-            //const Text('temp'),
-/*
-          child: imgCheck ? Image.memory(data) : const Text('loading...'),
-*/
-            ),
+        CustomPaint(
+          painter: SensorPainter(sensors),
+        ),
         Container(
           alignment: Alignment.center,
           child: const Text('Page 2'),
@@ -140,11 +120,11 @@ class SensorPainter extends CustomPainter {
     for (double y = 0; y < h; y++) {
       for (double x = 0; x < w; x++) {
         var paint = Paint()
-          ..color = Colors.red.withRed(sensorData[x.round()][y.round()])
+          ..color = Colors.red.withRed(sensorData[y.round()][x.round()])
           ..strokeWidth = 1
           ..strokeCap = StrokeCap.square;
 
-        Rect sensor = Offset(x, y) & const Size(1, 1);
+        Rect sensor = Offset(10 * x, 10 * y) & const Size(10, 10);
 
         canvas.drawRect(sensor, paint);
       }
@@ -152,7 +132,5 @@ class SensorPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
