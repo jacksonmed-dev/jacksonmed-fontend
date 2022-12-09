@@ -1,17 +1,14 @@
 import 'dart:core';
-import 'dart:developer';
 import 'dart:ui';
 
-import 'ducky.dart';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'getframe.dart';
 
-const h = 64;
-const w = 27;
+const h = 64.0;
+const w = 27.0;
 
 void main() => runApp(const MyApp());
 
@@ -45,14 +42,10 @@ class _OracleDemoState extends State<OracleDemo> {
   String url = 'http://192.168.1.3/api/frames';
 
   Uint8List r8 = Uint8List.fromList([]);
+  Uint8List ulist8 = Uint8List(1728);
   List<int> frame = [];
-  //Uint8List img = Uint8List.fromList([]);
-  var img;
-  bool nulltest = false;
-
-  void dummyCallbackFunction(image) {
-    print('image received');
-  }
+  bool imgCheck = false;
+  List<List<int>> img = [];
 
   void getFrame() async {
     var response = await http.get(Uri.parse(url));
@@ -61,33 +54,22 @@ class _OracleDemoState extends State<OracleDemo> {
     String parse2 = parse1.replaceAll('[ [ ', '[');
     String parse3 = parse2.replaceAll(' ] ]', ']');
     Frame r = frameFromJson(parse3);
-    Uint8List data =
-        (await rootBundle.load('assets/images.png')).buffer.asUint8List();
 
-    // copy from decodeImageFromList of package:flutter/painting.dart
-    //Convert parsing method to for loop?
-    //-> after that, just learn to parse the data directly from the map
     setState(() {
-//      frame = r.readings.map((e) => e * 2).toList();
-      frame = r.readings.toList();
-      //Probably need to loop through and manually adjust
-      //each variable in frame (ex: 0 -> 0, 100 -> 256).
+      frame = r.readings.map((e) => (e * 255 / 100).round()).toList();
       r8 = Uint8List.fromList(frame);
-      decodeImageFromPixels(
-          ducky, w, h, PixelFormat.bgra8888, dummyCallbackFunction);
-      img = data;
 
-      if (img == null) {
-        nulltest = false;
+      // ignore: unnecessary_null_comparison
+      if (r8 == null) {
+        imgCheck = false;
       } else {
-        nulltest = true;
+        imgCheck = true;
       }
 
-/*
-      for (var i = 0; i < r8.length; i += w) {
-        img.add(r8.sublist(i, i + w > r8.length ? r8.length : i + w));
+      for (var i = 0; i < r8.length; i += w.round()) {
+        img.add(frame.sublist(
+            i, i + w.round() > r8.length ? r8.length : i + w.round()));
       }
-      */
     });
   }
 
@@ -104,9 +86,9 @@ class _OracleDemoState extends State<OracleDemo> {
     }
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
+        onDestinationSelected: (int page) {
           setState(() {
-            currentPageIndex = index;
+            currentPageIndex = page;
           });
         },
         selectedIndex: currentPageIndex,
@@ -127,9 +109,15 @@ class _OracleDemoState extends State<OracleDemo> {
       ),
       body: <Widget>[
         Container(
-          alignment: Alignment.center,
-          child: nulltest ? Image.memory(r8) : const Text('loading...'),
-        ),
+            alignment: Alignment.center,
+            child: CustomPaint(
+              painter: SensorPainter(img),
+            )
+            //const Text('temp'),
+/*
+          child: imgCheck ? Image.memory(data) : const Text('loading...'),
+*/
+            ),
         Container(
           alignment: Alignment.center,
           child: const Text('Page 2'),
@@ -140,5 +128,31 @@ class _OracleDemoState extends State<OracleDemo> {
         ),
       ][currentPageIndex],
     );
+  }
+}
+
+class SensorPainter extends CustomPainter {
+  List<List<int>> sensorData = [];
+  SensorPainter(this.sensorData);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (double y = 0; y < h; y++) {
+      for (double x = 0; x < w; x++) {
+        var paint = Paint()
+          ..color = Colors.red.withRed(sensorData[x.round()][y.round()])
+          ..strokeWidth = 1
+          ..strokeCap = StrokeCap.square;
+
+        Rect sensor = Offset(x, y) & const Size(1, 1);
+
+        canvas.drawRect(sensor, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }

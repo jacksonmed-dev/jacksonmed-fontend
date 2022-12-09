@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-Uint8List ducky = Uint8List.fromList([
+Uint8List data = Uint8List.fromList([
   137,
   80,
   78,
