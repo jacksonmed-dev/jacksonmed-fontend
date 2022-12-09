@@ -1,13 +1,10 @@
 import 'dart:core';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'getframe.dart';
-
-const h = 64.0;
-const w = 27.0;
+import 'paintsensor.dart';
 
 void main() => runApp(const MyApp());
 
@@ -40,7 +37,8 @@ class _OracleDemoState extends State<OracleDemo> {
   int currentPageIndex = 0;
   String url = 'http://192.168.1.3/api/frames';
 
-  List<List<int>> sensors = [];
+  List<int> frame = [];
+  List<int> frame8 = [];
 
   void getFrame() async {
     var response = await http.get(Uri.parse(url));
@@ -51,31 +49,24 @@ class _OracleDemoState extends State<OracleDemo> {
     Frame r = frameFromJson(parse3);
 
     setState(() {
-      List<int> frame = r.readings.map((e) => (e * 255 / 100).round()).toList();
-
-      for (var i = 0; i < frame.length; i += w.round()) {
-        sensors.add(frame.sublist(
-            i, i + w.round() > frame.length ? frame.length : i + w.round()));
-      }
+      frame = r.readings.toList();
+      frame8 = r.readings.map((e) => (e * 255 / 100).round()).toList();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getFrame();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (currentPageIndex == 0) {
-//      getFrame();
-    }
+    getFrame();
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int page) {
+        onDestinationSelected: (int index) {
           setState(() {
-            currentPageIndex = page;
+            currentPageIndex = index;
           });
         },
         selectedIndex: currentPageIndex,
@@ -95,8 +86,13 @@ class _OracleDemoState extends State<OracleDemo> {
         ],
       ),
       body: <Widget>[
-        CustomPaint(
-          painter: SensorPainter(sensors),
+        Container(
+          alignment: Alignment.center,
+          child: CustomPaint(
+            painter: SensorPainter(
+              frame8,
+            ),
+          ),
         ),
         Container(
           alignment: Alignment.center,
@@ -109,28 +105,4 @@ class _OracleDemoState extends State<OracleDemo> {
       ][currentPageIndex],
     );
   }
-}
-
-class SensorPainter extends CustomPainter {
-  List<List<int>> sensorData = [];
-  SensorPainter(this.sensorData);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    for (double y = 0; y < h; y++) {
-      for (double x = 0; x < w; x++) {
-        var paint = Paint()
-          ..color = Colors.red.withRed(sensorData[y.round()][x.round()])
-          ..strokeWidth = 1
-          ..strokeCap = StrokeCap.square;
-
-        Rect sensor = Offset(10 * x, 10 * y) & const Size(10, 10);
-
-        canvas.drawRect(sensor, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
