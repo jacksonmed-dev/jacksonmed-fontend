@@ -38,7 +38,7 @@ class _OracleDemoState extends State<OracleDemo> {
   String url = 'http://192.168.1.3/api/frames';
 
   List<int> frame = [];
-  List<int> frame8 = [];
+//  List<int> frame8 = [];
 
   void getFrame() async {
     var response = await http.get(Uri.parse(url));
@@ -50,7 +50,7 @@ class _OracleDemoState extends State<OracleDemo> {
 
     setState(() {
       frame = r.readings.toList();
-      frame8 = r.readings.map((e) => (e * 255 / 100).round()).toList();
+//      frame8 = r.readings.map((e) => (e * 255 / 100).round()).toList();
     });
   }
 
@@ -61,7 +61,9 @@ class _OracleDemoState extends State<OracleDemo> {
 
   @override
   Widget build(BuildContext context) {
-    getFrame();
+    if (currentPageIndex == 0) {
+      getFrame();
+    }
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -90,7 +92,7 @@ class _OracleDemoState extends State<OracleDemo> {
           alignment: Alignment.center,
           child: CustomPaint(
             painter: SensorPainter(
-              frame8,
+              frame,
             ),
           ),
         ),
