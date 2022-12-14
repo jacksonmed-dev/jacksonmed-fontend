@@ -1,10 +1,12 @@
-// To parse this JSON data, do
-//
-//     final frame = frameFromJson(jsonString);
-
 import 'dart:convert';
 
-Frame frameFromJson(String str) => Frame.fromJson(json.decode(str));
+Frame frameFromJson(String str) {
+  String raw = str.substring(1, str.length - 1);
+  String parse1 = raw.substring(1, raw.length - 1);
+  String parse2 = parse1.replaceAll('[ [ ', '[');
+  String parse3 = parse2.replaceAll(' ] ]', ']');
+  return Frame.fromJson(json.decode(parse3));
+}
 
 class Frame {
   Frame({
@@ -22,10 +24,4 @@ class Frame {
         time: DateTime.parse(json["time"]),
         readings: List<int>.from(json["readings"].map((x) => x)),
       );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "time": time.toIso8601String(),
-        "readings": List<dynamic>.from(readings.map((x) => x)),
-      };
 }
