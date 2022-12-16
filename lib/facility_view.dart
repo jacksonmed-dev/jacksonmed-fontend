@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'patient_form.dart';
@@ -14,123 +12,17 @@ class FacilityView extends StatefulWidget {
 
 class _FacilityViewState extends State<FacilityView> {
   final facilityName = 'Jackson Medical Solutions';
-  final List<String> name = <String>[
-    'Obi-Wan Kenobi',
-    'Darth Vador',
-    'Han Solo',
-  ];
-
-  final List<double> height = [
-    Random().nextInt(210) + 90,
-    Random().nextInt(210) + 90,
-    Random().nextInt(210) + 90,
-  ];
-
-  final List<double> weight = [
-    Random().nextInt(210) + 90,
-    Random().nextInt(210) + 90,
-    Random().nextInt(210) + 90,
-  ];
-
-  List<String> sex = [];
-
-  List<double> brisk = [
-    Random().nextDouble(),
-    Random().nextDouble(),
-    Random().nextDouble(),
-  ];
-
-  List<int> inBed = [
-    Random().nextInt(1),
-    Random().nextInt(1),
-    Random().nextInt(1),
-  ];
-
-  List<int> asleep = [
-    Random().nextInt(1),
-    Random().nextInt(1),
-    Random().nextInt(1),
-  ];
-
-  List<int> hr = [];
-  List<int> rr = [];
-
-  List<String> bday = [];
-  //Sould probably be List<DateTime>
-
-  void newVitals() async {
-    List<int> newHR = [
-      Random().nextInt(40) + 60,
-      Random().nextInt(40) + 60,
-      Random().nextInt(40) + 60,
-    ];
-    List<int> newRR = [
-      Random().nextInt(20) + 10,
-      Random().nextInt(20) + 10,
-      Random().nextInt(20) + 10,
-    ];
-
-    //asleep||awake and in||out and weight would really be async
-    setState(() {
-      hr = newHR;
-      rr = newRR;
-    });
-  }
-
-  void bdaySex() async {
-    int m;
-    int d;
-    int y;
-    int x;
-    List<String> newBday = [];
-    List<String> newSex = [];
-    for (var i = 0; i < 3; i++) {
-      m = Random().nextInt(11) + 1;
-      d = Random().nextInt(29) + 1;
-      y = Random().nextInt(82) + 1992;
-      newBday[i] = '$m/$d/$y';
-      x = Random().nextInt(1);
-      if (x == 0) {
-        newSex[i] = 'Male';
-      } else {
-        newSex[i] = 'Female';
-      }
-    }
-    setState(() {
-      bday = newBday;
-      sex = newSex;
-    });
-  }
-
-  @override
-  void initState() {
-    bdaySex();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    newVitals();
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('$facilityName Overview')),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        itemCount: name.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Container(
-            width: 0,
-            height: 256,
-            color: Color.lerp(Colors.green, Colors.red, brisk[index]),
-            child: Center(child: Text('Entry ${name[index]}')),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(
-          height: 16,
-        ),
-      ),
+      body: null,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         onPressed: () async {
           await Navigator.push(
             context,
@@ -141,8 +33,72 @@ class _FacilityViewState extends State<FacilityView> {
             ),
           );
         },
-        child: const Icon(Icons.library_add),
+        child: const Icon(Icons.person_add),
       ),
     );
   }
 }
+
+//DraggableScrollableSheet would be fantastic for the facility grid view,
+//otherwise, we would have to do filtering options...
+//>> filter by: fname, lname, bday (age), brisk, frisk, room#, even length of
+//stay or weight... but those last 2 probably would not be approrpiate for the
+//context https://docs.flutter.dev/development/ui/widgets/interaction
+
+//silvers are extremely neat too, check out CustomScrollView
+//https://api.flutter.dev/flutter/widgets/CustomScrollView-class.html
+
+
+/*
+      body: ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: name.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            height: 256,
+            color: Color.lerp(Colors.green, Colors.red, bRisk[index]),
+            child: Row(
+              children: [
+                Container(
+                  color: Colors.grey,
+                  width: 128,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Icon(
+                        Icons.image,
+                        size: 128,
+                      ),
+                      Text(
+                        name[index],
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Icon(Icons.favorite),
+                        Text('${hr[index]}', textAlign: TextAlign.center),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Icon(Icons.account_circle),
+                        Text('${rr[index]}', textAlign: TextAlign.center),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
+      */

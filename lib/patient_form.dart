@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
+import 'patient_view.dart';
 import 'patients.dart';
 
 class PatientForm extends StatefulWidget {
@@ -81,119 +82,160 @@ class _PatientFormState extends State<PatientForm> {
       ),
       body: Form(
         key: _patientFormKey,
-        child: Column(
-          children: <Widget>[
-            TextFormField(
-              controller: fnameController,
-              decoration: const InputDecoration(
-                labelText: 'First Name',
-                hintText: 'ex: Anakin',
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextFormField(
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 36),
+                controller: fnameController,
+                decoration: const InputDecoration(
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  icon: Icon(Icons.person),
+                  labelText: 'First Name',
+                  hintText: 'ex: Anakin',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Invalid';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Invalid';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: lnameController,
-              decoration: const InputDecoration(
-                labelText: 'Last Name',
-                hintText: 'ex: Skywalker',
+              TextFormField(
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 36),
+                controller: lnameController,
+                decoration: const InputDecoration(
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  icon: Icon(Icons.person),
+                  labelText: 'Last Name',
+                  hintText: 'ex: Skywalker',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Invalid';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Invalid';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: bdayController,
-              decoration: const InputDecoration(
-                icon: Icon(Icons.calendar_today),
-                labelText: 'Date of Birth',
+              TextFormField(
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 36),
+                controller: bdayController,
+                decoration: const InputDecoration(
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  icon: Icon(Icons.calendar_today),
+                  labelText: 'Date of Birth',
+                ),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? dob = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+                  if (dob != null) {
+                    String formattedDate = DateFormat('MM/dd/yyyy').format(dob);
+                    setState(() {
+                      bdayController.text = formattedDate;
+                    });
+                  }
+                },
               ),
-              readOnly: true,
-              onTap: () async {
-                DateTime? dob = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
-                if (dob != null) {
-                  String formattedDate = DateFormat('MM/dd/yyyy').format(dob);
-                  setState(() {
-                    bdayController.text = formattedDate;
-                  });
-                }
-              },
-            ),
-            TextFormField(
-              controller: heightController,
-              decoration: const InputDecoration(
-                hintText: 'Height',
+              TextFormField(
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 36),
+                controller: heightController,
+                decoration: const InputDecoration(
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  icon: Icon(Icons.straighten),
+                  labelText: 'Height (cm)',
+                  hintText: 'ex: 165cm',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Invalid';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Invalid';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: weightController,
-              decoration: const InputDecoration(
-                hintText: 'Weight',
+              TextFormField(
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 36),
+                controller: weightController,
+                decoration: const InputDecoration(
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  icon: Icon(Icons.monitor_weight),
+                  labelText: 'Weight (kg)',
+                  hintText: 'ex: 85kg',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Invalid';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Invalid';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: sexController,
-              decoration: const InputDecoration(
-                hintText: 'Sex',
+              TextFormField(
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 36),
+                controller: sexController,
+                decoration: const InputDecoration(
+                  floatingLabelAlignment: FloatingLabelAlignment.center,
+                  icon: Icon(Icons.transgender),
+                  labelText: 'Sex',
+                  hintText: 'ex: Female',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Invalid';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Invalid';
-                }
-                return null;
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_patientFormKey.currentState!.validate()) {
-                  patient.fname = fnameController.text;
-                  patient.lname = lnameController.text;
-                  patient.bday = bdayController.text;
-                  patient.height = heightController.text;
-                  patient.weight = weightController.text;
-                  patient.sex = sexController.text;
-                  createPatient(patient);
-                }
-              },
-              child: const Text('Save & Continue'),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(fixedSize: Size(128, 128)),
+                  onPressed: () async {
+                    if (_patientFormKey.currentState!.validate()) {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const PatientView();
+                          },
+                        ),
+                      );
+                      /*
+                      patient.fname = fnameController.text;
+                      patient.lname = lnameController.text;
+                      patient.bday = bdayController.text;
+                      patient.height = heightController.text;
+                      patient.weight = weightController.text;
+                      patient.sex = sexController.text;
+                      createPatient(patient);
+        */
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Invalid')),
+                      );
+                    }
+                  },
+                  child: const Icon(
+                    Icons.arrow_forward,
+                    size: 64,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
-//DraggableScrollableSheet would be fantastic for the patient gride view,
-//otherwise, we would have to do filtering options...
-//>> filter by: fname, lname, bday (age), brisk, frisk, room#, even length of
-//stay or weight... but those last 2 probably would not be approrpiate for the
-//context https://docs.flutter.dev/development/ui/widgets/interaction
-
-//silvers are extremely neat too, check out CustomScrollView
-//https://api.flutter.dev/flutter/widgets/CustomScrollView-class.html

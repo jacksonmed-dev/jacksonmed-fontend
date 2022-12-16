@@ -25,9 +25,17 @@ class _PatientViewState extends State<PatientView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     getFrame();
     return Scaffold(
+      appBar: AppBar(
+        title: const Center(child: Text('*Insert Patient Name*')),
+      ),
       body: Transform.scale(
         scale: 10,
         child: Center(
@@ -39,10 +47,10 @@ class _PatientViewState extends State<PatientView> {
     );
   }
 }
-
+ 
 
 //I imagine the widget looking like this:
-//LEFT SIDE COLUMN: Photo, Name (Big & Bold), Age & Birthday, Weight & Gender,
+//LEFT: Collapsable side bar Photo, Name (Big), Age & Birthday, Weight & Gender,
 //Fall Risk & Bedsore Risk
 //CENTER: Sensor Live View with Risk, Attended Information, Live Vitals
 //BOTTOM CENTER: Sleep Information
