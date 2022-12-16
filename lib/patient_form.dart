@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:oracle_demo/bedsore_form.dart';
 
 import 'patient_view.dart';
 import 'patients.dart';
@@ -207,7 +208,7 @@ class _PatientFormState extends State<PatientForm> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const PatientView();
+                            return const NortonScale();
                           },
                         ),
                       );
