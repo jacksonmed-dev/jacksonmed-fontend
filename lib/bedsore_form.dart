@@ -28,7 +28,7 @@ class _NortonScaleState extends State<NortonScale> {
     'Very Limited',
     'Immobile'
   ];
-  final List<String> incontinent = ['Never', 'Sometimes', 'Often', 'Always'];
+  final List<String> incontinent = ['No', 'Sometimes', 'Often', 'Always'];
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class _NortonScaleState extends State<NortonScale> {
             ),
             Column(
               children: [
-                const Text('Is the Patient Incontinent?'),
+                const Text('Is the patient incontinent?'),
                 Slider(
                   value: _currentIncontinent,
                   min: 1,

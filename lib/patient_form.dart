@@ -58,6 +58,7 @@ class _PatientFormState extends State<PatientForm> {
     super.dispose();
   }
 
+/*
   Future<http.Response> createPatient(Patient p) {
     return http.post(
       Uri.parse(apiurl),
@@ -74,6 +75,7 @@ class _PatientFormState extends State<PatientForm> {
       }),
     );
   }
+*/
 
   @override
   Widget build(BuildContext context) {
@@ -212,15 +214,15 @@ class _PatientFormState extends State<PatientForm> {
                           },
                         ),
                       );
-                      /*
+
                       patient.fname = fnameController.text;
                       patient.lname = lnameController.text;
                       patient.bday = bdayController.text;
                       patient.height = heightController.text;
                       patient.weight = weightController.text;
                       patient.sex = sexController.text;
-                      createPatient(patient);
-        */
+//                      createPatient(patient);
+
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Invalid')),

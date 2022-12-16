@@ -13,31 +13,214 @@ class FacilityView extends StatefulWidget {
 class _FacilityViewState extends State<FacilityView> {
   final facilityName = 'Jackson Medical Solutions';
 
+  bool isSelectionMode = false;
+  final int listLength = 30;
+  late List<bool> _selected;
+  bool _selectAll = false;
+  bool _isGridMode = false;
+
+  List<Patient> patients = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initializeSelection();
+  }
+
+  void initializeSelection() {
+    _selected = List<bool>.generate(listLength, (_) => false);
+  }
+
+  @override
+  void dispose() {
+    _selected.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text('$facilityName Overview')),
-      ),
-      body: null,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return const PatientForm();
-              },
-            ),
+        appBar: AppBar(
+          title: const Text(
+            'Facility Overview',
+          ),
+          leading: isSelectionMode
+              ? IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    setState(() {
+                      isSelectionMode = false;
+                    });
+                    initializeSelection();
+                  },
+                )
+              : const SizedBox(),
+          actions: <Widget>[
+            if (_isGridMode)
+              IconButton(
+                icon: const Icon(Icons.grid_on),
+                onPressed: () {
+                  setState(() {
+                    _isGridMode = false;
+                  });
+                },
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.list),
+                onPressed: () {
+                  setState(() {
+                    _isGridMode = true;
+                  });
+                },
+              ),
+            if (isSelectionMode)
+              TextButton(
+                  child: !_selectAll
+                      ? const Text(
+                          'select all',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      : const Text(
+                          'unselect all',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                  onPressed: () {
+                    _selectAll = !_selectAll;
+                    setState(() {
+                      _selected =
+                          List<bool>.generate(listLength, (_) => _selectAll);
+                    });
+                  }),
+          ],
+        ),
+        body: _isGridMode
+            ? GridBuilder(
+                isSelectionMode: isSelectionMode,
+                selectedList: _selected,
+                onSelectionChange: (bool x) {
+                  setState(() {
+                    isSelectionMode = x;
+                  });
+                },
+              )
+            : ListBuilder(
+                isSelectionMode: isSelectionMode,
+                selectedList: _selected,
+                onSelectionChange: (bool x) {
+                  setState(() {
+                    isSelectionMode = x;
+                  });
+                },
+              ));
+  }
+}
+
+class GridBuilder extends StatefulWidget {
+  const GridBuilder({
+    super.key,
+    required this.selectedList,
+    required this.isSelectionMode,
+    required this.onSelectionChange,
+  });
+
+  final bool isSelectionMode;
+  final Function(bool)? onSelectionChange;
+  final List<bool> selectedList;
+
+  @override
+  GridBuilderState createState() => GridBuilderState();
+}
+
+class GridBuilderState extends State<GridBuilder> {
+  void _toggle(int index) {
+    if (widget.isSelectionMode) {
+      setState(() {
+        widget.selectedList[index] = !widget.selectedList[index];
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+        itemCount: widget.selectedList.length,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemBuilder: (_, int index) {
+          return InkWell(
+            onTap: () => _toggle(index),
+            onLongPress: () {
+              if (!widget.isSelectionMode) {
+                setState(() {
+                  widget.selectedList[index] = true;
+                });
+                widget.onSelectionChange!(true);
+              }
+            },
+            child: GridTile(
+                child: Container(
+              child: widget.isSelectionMode
+                  ? Checkbox(
+                      onChanged: (bool? x) => _toggle(index),
+                      value: widget.selectedList[index])
+                  : const Icon(Icons.image),
+            )),
           );
-        },
-        child: const Icon(Icons.person_add),
+        });
+  }
+}
+
+class ListBuilder extends StatefulWidget {
+  const ListBuilder({
+    super.key,
+    required this.selectedList,
+    required this.isSelectionMode,
+    required this.onSelectionChange,
+  });
+
+  final bool isSelectionMode;
+  final List<bool> selectedList;
+  final Function(bool)? onSelectionChange;
+
+  @override
+  State<ListBuilder> createState() => _ListBuilderState();
+}
+
+class _ListBuilderState extends State<ListBuilder> {
+  void _toggle(int index) {
+    if (widget.isSelectionMode) {
+      setState(() {
+        widget.selectedList[index] = !widget.selectedList[index];
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      padding: EdgeInsets.all(16),
+      itemCount: widget.selectedList.length,
+      itemBuilder: (_, int index) {
+        return Container(
+          height: 256,
+          color: Colors.grey,
+          child: Row(
+            children: [
+              Column(),
+              Column(),
+              ElevatedButton(onPressed: null, child: null),
+            ],
+          ),
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(
+        height: 16,
       ),
     );
   }
 }
+
 
 //DraggableScrollableSheet would be fantastic for the facility grid view,
 //otherwise, we would have to do filtering options...
