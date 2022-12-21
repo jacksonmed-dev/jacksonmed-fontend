@@ -7,8 +7,9 @@ class Patient {
   String height; //double (cm)
   String weight; //double (kg)
   String sex;
-//  int brisk (Braden -or- Norton)
-//  int frisk (Morse -or-  WSFRAT)
+  int bRisk; //(Braden -or- Norton)
+  int fRisk; //(Morse -or-  WSFRAT)
+//  int room;
 
   Patient({
     required this.fname,
@@ -17,9 +18,13 @@ class Patient {
     required this.height,
     required this.weight,
     required this.sex,
+    required this.bRisk,
+    required this.fRisk,
+//    required this.room,
   });
 }
 
+/*
 final List<String> name = [
   'Obi-Wan Kenobi',
   'Darth Vador',
@@ -86,8 +91,10 @@ List<int> hr = [
   Random().nextInt(40) + 60,
 ];
 
+
 List<int> rr = [
   Random().nextInt(20) + 10,
   Random().nextInt(20) + 10,
   Random().nextInt(20) + 10,
 ];
+*/

@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'package:oracle_demo/bedsore_form.dart';
 
-import 'patient_view.dart';
+import 'bedsore_form.dart';
 import 'patients.dart';
 
 class PatientForm extends StatefulWidget {
@@ -25,7 +21,7 @@ class _PatientFormState extends State<PatientForm> {
   final weightController = TextEditingController();
   final sexController = TextEditingController();
 
-  final apiurl = 'https://test.api.jacksonmed.org/patient';
+//  final apiurl = 'https://test.api.jacksonmed.org/patient';
 
   Patient patient = Patient(
     fname: '',
@@ -34,6 +30,8 @@ class _PatientFormState extends State<PatientForm> {
     height: '',
     weight: '',
     sex: '',
+    fRisk: 0,
+    bRisk: 0,
   );
 
   @override
@@ -88,17 +86,12 @@ class _PatientFormState extends State<PatientForm> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextFormField(
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 36),
                 controller: fnameController,
                 decoration: const InputDecoration(
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.badge_outlined),
                   labelText: 'First Name',
-                  hintText: 'ex: Anakin',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -108,14 +101,10 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 36),
                 controller: lnameController,
                 decoration: const InputDecoration(
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.badge_outlined),
                   labelText: 'Last Name',
-                  hintText: 'ex: Skywalker',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -125,12 +114,9 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 36),
                 controller: bdayController,
                 decoration: const InputDecoration(
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
-                  icon: Icon(Icons.calendar_today),
+                  icon: Icon(Icons.calendar_month),
                   labelText: 'Date of Birth',
                 ),
                 readOnly: true,
@@ -150,14 +136,10 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 36),
                 controller: heightController,
                 decoration: const InputDecoration(
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
                   icon: Icon(Icons.straighten),
                   labelText: 'Height (cm)',
-                  hintText: 'ex: 165cm',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -167,14 +149,10 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 36),
                 controller: weightController,
                 decoration: const InputDecoration(
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
-                  icon: Icon(Icons.monitor_weight),
+                  icon: Icon(Icons.fitness_center),
                   labelText: 'Weight (kg)',
-                  hintText: 'ex: 85kg',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -184,14 +162,10 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 36),
                 controller: sexController,
                 decoration: const InputDecoration(
-                  floatingLabelAlignment: FloatingLabelAlignment.center,
                   icon: Icon(Icons.transgender),
                   labelText: 'Sex',
-                  hintText: 'ex: Female',
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -203,7 +177,7 @@ class _PatientFormState extends State<PatientForm> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(fixedSize: Size(128, 128)),
+                  style: ElevatedButton.styleFrom(fixedSize: Size(128, 64)),
                   onPressed: () async {
                     if (_patientFormKey.currentState!.validate()) {
                       await Navigator.push(
