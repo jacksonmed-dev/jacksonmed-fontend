@@ -4,23 +4,21 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Temp extends StatelessWidget {
+  const Temp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Flutter FormBuilder Demo',
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
+      localizationsDelegates: [
         FormBuilderLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      // supportedLocales: FormBuilderLocalizations.delegate.supportedLocales,
-      home: const CompleteForm(),
+      supportedLocales: FormBuilderLocalizations.supportedLocales,
+      home: CompleteForm(),
     );
   }
 }
@@ -269,6 +267,7 @@ class _CompleteFormState extends State<CompleteForm> {
                       name: 'accept_terms_switch',
                       initialValue: true,
                       onChanged: _onChanged,
+                      decoration: const InputDecoration(suffixText: 'Yes'),
                     ),
                     FormBuilderCheckboxGroup<String>(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -335,6 +334,7 @@ class _CompleteFormState extends State<CompleteForm> {
                               'Ok, if I had to choose one language, it would be:'),
                       name: 'languages_choice',
                       initialValue: 'Dart',
+                      selectedColor: Colors.blue,
                       options: const [
                         FormBuilderChipOption(
                           value: 'Dart',

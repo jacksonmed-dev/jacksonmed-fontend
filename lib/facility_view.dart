@@ -43,7 +43,7 @@ class _FacilityViewState extends State<FacilityView> {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return const PatientView();
+                return const PatientForm();
               },
             ),
           );

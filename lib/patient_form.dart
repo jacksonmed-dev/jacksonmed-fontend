@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'temporary.dart';
 import 'bedsore_form.dart';
 import 'patients.dart';
 
@@ -14,45 +15,76 @@ class PatientForm extends StatefulWidget {
 class _PatientFormState extends State<PatientForm> {
   final _patientFormKey = GlobalKey<FormState>();
 
-  final fnameController = TextEditingController();
-  final lnameController = TextEditingController();
-  final bdayController = TextEditingController();
+  final roomController = TextEditingController();
   final heightController = TextEditingController();
   final weightController = TextEditingController();
   final sexController = TextEditingController();
+  final bRiskController = TextEditingController();
+  final fRiskController = TextEditingController();
+  final sIdController = TextEditingController();
+  final fIdController = TextEditingController();
+  final pIdController = TextEditingController();
+  final fNameController = TextEditingController();
+  final lNameController = TextEditingController();
+  final bDayController = TextEditingController();
+
+  List<DropdownMenuItem<String>> get sexItems {
+    List<DropdownMenuItem<String>> sexes = [
+      const DropdownMenuItem(value: "Male", child: Text("Male")),
+      const DropdownMenuItem(value: "Female", child: Text("Female")),
+      const DropdownMenuItem(value: "Other", child: Text("Other")),
+    ];
+    return sexes;
+  }
 
 //  final apiurl = 'https://test.api.jacksonmed.org/patient';
 
   Patient patient = Patient(
-    fname: '',
-    lname: '',
-    bday: '',
+    room: '',
     height: '',
     weight: '',
     sex: '',
-    fRisk: 0,
-    bRisk: 0,
+    bRisk: '',
+    fRisk: '',
+    sId: '',
+    fId: '',
+    pId: '',
+    fName: '',
+    lName: '',
+    bDay: '',
   );
 
   @override
   void initState() {
-    fnameController.text = '';
-    lnameController.text = '';
-    bdayController.text = '';
+    roomController.text = '';
     heightController.text = '';
     weightController.text = '';
     sexController.text = '';
+    bRiskController.text = '';
+    fRiskController.text = '';
+    sIdController.text = '';
+    fIdController.text = '';
+    pIdController.text = '';
+    fNameController.text = '';
+    lNameController.text = '';
+    bDayController.text = '';
     super.initState();
   }
 
   @override
   void dispose() {
-    fnameController.dispose();
-    lnameController.dispose();
-    bdayController.dispose();
+    roomController.dispose();
     heightController.dispose();
     weightController.dispose();
     sexController.dispose();
+    bRiskController.dispose();
+    fRiskController.dispose();
+    sIdController.dispose();
+    fIdController.dispose();
+    pIdController.dispose();
+    fNameController.dispose();
+    lNameController.dispose();
+    bDayController.dispose();
     super.dispose();
   }
 
@@ -61,20 +93,22 @@ class _PatientFormState extends State<PatientForm> {
     return http.post(
       Uri.parse(apiurl),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
       },
       body: jsonEncode(<String, String>{
-        "firstName": p.fname,
-        "lastName": p.lname,
+        "bedsoreRisk": p.bRisk,
         "birthday": p.bday,
+        "fallRisk": p.fRisk,
+        "firstName": p.fname,
         "height": p.height,
+        "lastName": p.lname,
+        "roomId": p.room,
+        "sex": p.sex,
         "weight": p.weight,
-        "sex": p.sex
       }),
     );
   }
 */
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +122,7 @@ class _PatientFormState extends State<PatientForm> {
           child: Column(
             children: <Widget>[
               TextFormField(
-                controller: fnameController,
+                controller: fNameController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.badge_outlined),
                   labelText: 'First Name',
@@ -101,7 +135,7 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                controller: lnameController,
+                controller: lNameController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.badge_outlined),
                   labelText: 'Last Name',
@@ -114,7 +148,7 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
-                controller: bdayController,
+                controller: bDayController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.calendar_month),
                   labelText: 'Date of Birth',
@@ -130,12 +164,13 @@ class _PatientFormState extends State<PatientForm> {
                   if (dob != null) {
                     String formattedDate = DateFormat('MM/dd/yyyy').format(dob);
                     setState(() {
-                      bdayController.text = formattedDate;
+                      bDayController.text = formattedDate;
                     });
                   }
                 },
               ),
               TextFormField(
+                //scroll wheel with options for ft & in or cm
                 controller: heightController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.straighten),
@@ -149,6 +184,7 @@ class _PatientFormState extends State<PatientForm> {
                 },
               ),
               TextFormField(
+                //scroll wheel with options for kg or lbs
                 controller: weightController,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.fitness_center),
@@ -161,15 +197,22 @@ class _PatientFormState extends State<PatientForm> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: sexController,
+              DropdownButtonFormField(
                 decoration: const InputDecoration(
                   icon: Icon(Icons.transgender),
                   labelText: 'Sex',
                 ),
+                onChanged: (String? value) {
+                  if (value != null) {
+                    setState(() {
+                      sexController.text = value;
+                    });
+                  }
+                },
+                items: sexItems,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Invalid';
+                    return 'Select Sex';
                   }
                   return null;
                 },
@@ -177,36 +220,31 @@ class _PatientFormState extends State<PatientForm> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(fixedSize: Size(128, 64)),
                   onPressed: () async {
                     if (_patientFormKey.currentState!.validate()) {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const NortonScale();
-                          },
-                        ),
-                      );
-
-                      patient.fname = fnameController.text;
-                      patient.lname = lnameController.text;
-                      patient.bday = bdayController.text;
+                      patient.fName = fNameController.text;
+                      patient.lName = lNameController.text;
+                      patient.bDay = bDayController.text;
                       patient.height = heightController.text;
                       patient.weight = weightController.text;
                       patient.sex = sexController.text;
 //                      createPatient(patient);
 
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const BradenForm();
+                          },
+                        ),
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Invalid')),
                       );
                     }
                   },
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    size: 64,
-                  ),
+                  child: const Text('Next'),
                 ),
               ),
             ],
