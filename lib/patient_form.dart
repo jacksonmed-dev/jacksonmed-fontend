@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'temporary.dart';
 import 'bedsore_form.dart';
 import 'patients.dart';
 
@@ -234,7 +233,7 @@ class _PatientFormState extends State<PatientForm> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const BradenForm();
+                            return const BedsoreForm();
                           },
                         ),
                       );
