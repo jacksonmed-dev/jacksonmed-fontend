@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'patients.dart';
 import 'fall_form.dart';
 
 class BedsoreForm extends StatefulWidget {
-  const BedsoreForm({super.key});
+  final Patient patient;
+  const BedsoreForm({super.key, required this.patient});
 
   @override
   State<BedsoreForm> createState() => _BedsoreFormState();
@@ -270,6 +272,7 @@ class _BedsoreFormState extends State<BedsoreForm> {
                       mobilityScore +
                       nutritionScore +
                       assistanceScore;
+                  widget.patient.bRisk = bRisk.toString();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

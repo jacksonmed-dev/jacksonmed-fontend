@@ -233,7 +233,7 @@ class _PatientFormState extends State<PatientForm> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const BedsoreForm();
+                            return BedsoreForm(patient: patient);
                           },
                         ),
                       );

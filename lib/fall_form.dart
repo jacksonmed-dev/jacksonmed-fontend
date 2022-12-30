@@ -22,32 +22,32 @@ class _FallFormState extends State<FallForm> {
 
   List<String> aidOptions = [
     //does [name] require assistance to walk?
-    'No Aid or Immobile',
-    'Some Aid Required',
-    'Extensive Aid Required',
+    'None OR Wheelchair OR Bedridden',
+    'Uses a Walking Device',
+    'Relies on Furniture for Support',
   ];
 
   List<String> mobilityOptions = [
     //What is the quality of [name's] gait and balance?
     'Good or Immobile',
-    'Fair',
-    'Very Poor',
+    'Stooped Posture',
+    'Shuffles Steps',
   ];
 
   List<String> mentalOptions = [
     //what is the mental status of [name]?
-    'Aware and/or Coherent', //psychology
+    'Aware and Coherent', //psychology
     'Confused and/or Forgetful', //psychology alt or question mark
   ];
 
-  int sensationScore = 0;
-  int moistureScore = 0;
-  int activityScore = 0;
+  int historyScore = 0;
+  int secondaryScore = 0;
+  int aidScore = 0;
+  int ivScore = 0;
   int mobilityScore = 0;
-  int nutritionScore = 0;
-  int assistanceScore = 0;
+  int mentalScore = 0;
 
-  int bRisk = 0;
+  int fRisk = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -61,206 +61,171 @@ class _FallFormState extends State<FallForm> {
           children: [
             FormBuilderChoiceChip<String>(
               decoration: const InputDecoration(
-                labelText: 'Sensory Perception',
+                labelText: 'Has [name] had a fall within the last 3 months?',
               ),
-              name: 'sense',
+              name: 'history',
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: yesNo[3],
-                  avatar: const Icon(Icons.sentiment_satisfied_outlined),
-                ),
-                FormBuilderChipOption(
-                  value: yesNo[2],
-                  avatar: const Icon(Icons.sentiment_neutral_outlined),
+                  value: yesNo[0],
+                  avatar: const Icon(Icons.close),
                 ),
                 FormBuilderChipOption(
                   value: yesNo[1],
-                  avatar: const Icon(Icons.sentiment_dissatisfied_outlined),
-                ),
-                FormBuilderChipOption(
-                  value: yesNo[0],
-                  avatar: const Icon(Icons.close),
+                  avatar: const Icon(Icons.check),
                 ),
               ],
               validator: (value) {
                 if (value == null) {
                   return 'Select One';
                 }
-                sensationScore = yesNo.indexOf(value) + 1;
+                historyScore = yesNo.indexOf(value) * 25;
                 return null;
               },
             ),
             FormBuilderChoiceChip<String>(
               decoration: const InputDecoration(
-                labelText: 'Skin Moisture',
+                labelText:
+                    'Does [name] currently have a seconday medical diagnosis?',
               ),
-              name: 'moist',
+              name: 'secondary',
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: yesNo[3],
-                  avatar: const Icon(Icons.format_color_reset_outlined),
-                ),
-                FormBuilderChipOption(
-                  value: yesNo[2],
-                  avatar: const Icon(Icons.water_drop_outlined),
+                  value: yesNo[0],
+                  avatar: const Icon(Icons.close),
                 ),
                 FormBuilderChipOption(
                   value: yesNo[1],
-                  avatar: const Icon(Icons.opacity),
-                ),
-                FormBuilderChipOption(
-                  value: yesNo[0],
-                  avatar: const Icon(Icons.water_drop),
+                  avatar: const Icon(Icons.check),
                 ),
               ],
               validator: (value) {
                 if (value == null) {
                   return 'Invalid';
                 }
-                moistureScore = yesNo.indexOf(value) + 1;
+                secondaryScore = yesNo.indexOf(value) * 15;
                 return null;
               },
             ),
             FormBuilderChoiceChip<String>(
               decoration: const InputDecoration(
-                labelText: 'Activity Level',
+                labelText: 'Does [name] require assistance to walk?',
               ),
-              name: 'active',
+              name: 'aid',
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: aidOptions[3],
-                  avatar: const Icon(Icons.directions_run),
-                ),
-                FormBuilderChipOption(
-                  value: aidOptions[2],
-                  avatar: const Icon(Icons.directions_walk),
+                  value: aidOptions[0],
+                  avatar: const Icon(Icons.wheelchair_pickup),
                 ),
                 FormBuilderChipOption(
                   value: aidOptions[1],
-                  avatar: const Icon(Icons.airline_seat_recline_normal),
+                  avatar: const Icon(Icons.elderly),
                 ),
                 FormBuilderChipOption(
-                  value: aidOptions[0],
-                  avatar: const Icon(Icons.hotel),
+                  value: aidOptions[2],
+                  avatar: const Icon(Icons.chair),
                 ),
               ],
               validator: (value) {
                 if (value == null) {
                   return 'Invalid';
                 }
-                activityScore = aidOptions.indexOf(value) + 1;
+                aidScore = aidOptions.indexOf(value) * 15;
                 return null;
               },
             ),
             FormBuilderChoiceChip<String>(
               decoration: const InputDecoration(
-                labelText: 'Mobility',
+                labelText: 'Is [name] currently using an IV?',
               ),
-              name: 'mobile',
+              name: 'iv',
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: yesNo[3],
-                  avatar: const Icon(Icons.zoom_out_map),
-                ),
-                FormBuilderChipOption(
-                  value: yesNo[2],
-                  avatar: const Icon(Icons.multiple_stop),
+                  value: yesNo[0],
+                  avatar: const Icon(Icons.close),
                 ),
                 FormBuilderChipOption(
                   value: yesNo[1],
-                  avatar: const Icon(Icons.mobiledata_off),
-                ),
-                FormBuilderChipOption(
-                  value: yesNo[0],
-                  avatar: const Icon(Icons.block),
+                  avatar: const Icon(Icons.check),
                 ),
               ],
               validator: (value) {
                 if (value == null) {
                   return 'Invalid';
                 }
-                mobilityScore = yesNo.indexOf(value) + 1;
+                ivScore = yesNo.indexOf(value) * 20;
                 return null;
               },
             ),
             FormBuilderChoiceChip<String>(
               decoration: const InputDecoration(
-                labelText: 'Nutrition',
+                labelText: 'What is the quality of [name] gait and balance?',
               ),
-              name: 'nutrient',
+              name: 'mobility',
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: mobilityOptions[3],
-                  avatar: const Icon(Icons.fastfood),
-                ),
-                FormBuilderChipOption(
-                  value: mobilityOptions[2],
-                  avatar: const Icon(Icons.lunch_dining),
+                  value: mobilityOptions[0],
+                  avatar: const Icon(Icons.directions_run),
                 ),
                 FormBuilderChipOption(
                   value: mobilityOptions[1],
-                  avatar: const Icon(Icons.local_pizza_outlined),
+                  avatar: const Icon(Icons.directions_walk),
                 ),
                 FormBuilderChipOption(
-                  value: mobilityOptions[0],
-                  avatar: const Icon(Icons.no_food),
+                  value: mobilityOptions[2],
+                  avatar: const Icon(Icons.elderly),
                 ),
               ],
               validator: (value) {
                 if (value == null) {
                   return 'Invalid';
                 }
-                nutritionScore = mobilityOptions.indexOf(value) + 1;
+                mobilityScore = mobilityOptions.indexOf(value) * 10;
                 return null;
               },
             ),
             FormBuilderChoiceChip<String>(
               decoration: const InputDecoration(
-                labelText: 'Assistance Required',
+                labelText: 'What is the mental status of [name]?',
               ),
-              name: 'assist',
+              name: 'mental',
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: mentalOptions[2],
-                  avatar: const Icon(Icons.accessibility),
+                  value: mentalOptions[0],
+                  avatar: const Icon(Icons.psychology),
                 ),
                 FormBuilderChipOption(
                   value: mentalOptions[1],
-                  avatar: const Icon(Icons.people),
-                ),
-                FormBuilderChipOption(
-                  value: mentalOptions[0],
-                  avatar: const Icon(Icons.sports_kabaddi),
+                  avatar: const Icon(Icons.help),
                 ),
               ],
               validator: (value) {
                 if (value == null) {
                   return 'Invalid';
                 }
-                assistanceScore = mentalOptions.indexOf(value) + 1;
+                mentalScore = mentalOptions.indexOf(value) * 15;
                 return null;
               },
             ),
             ElevatedButton(
               onPressed: () {
                 if (_bedsoreFormKey.currentState!.validate()) {
-                  bRisk = sensationScore +
-                      moistureScore +
-                      activityScore +
+                  fRisk = historyScore +
+                      secondaryScore +
+                      aidScore +
+                      ivScore +
                       mobilityScore +
-                      nutritionScore +
-                      assistanceScore;
+                      mentalScore;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        print(bRisk);
+                        print(fRisk);
                         return const Text('');
 //                        return const FallForm();
                       },
