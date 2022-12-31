@@ -12,7 +12,7 @@ class PatientView extends StatefulWidget {
 }
 
 class _PatientViewState extends State<PatientView> {
-  String url = 'http://192.168.1.3/api/frames';
+  String url = 'http://192.168.1.4/api/frames';
   List<int> frame = List<int>.filled(1728, 0);
 
   void getFrame() async {

@@ -38,19 +38,36 @@ class _PatientFormState extends State<PatientForm> {
 
 //  final apiurl = 'https://test.api.jacksonmed.org/patient';
 
-  Patient patient = Patient(
-    room: '',
-    height: '',
-    weight: '',
-    sex: '',
-    bRisk: '',
-    fRisk: '',
-    sId: '',
-    fId: '',
-    pId: '',
-    fName: '',
-    lName: '',
-    bDay: '',
+  User user = User(
+    patient: Patient(
+      bDay: '',
+      bRisk: '',
+      fId: '',
+      fName: '',
+      fRisk: '',
+      height: '',
+      lName: '',
+      pId: '',
+      room: '',
+      sId: '',
+      sex: '',
+      weight: '',
+    ),
+    bScores: BScores(
+      sensoryScore: 0,
+      moistureScore: 0,
+      activityScore: 0,
+      mobilityScore: 0,
+      nutritionScore: 0,
+      assistanceScore: 0,
+    ),
+    fScores: FScores(
+        historyScore: 0,
+        secondaryScore: 0,
+        aidScore: 0,
+        ivScore: 0,
+        mobilityScore: 0,
+        mentalScore: 0),
   );
 
   @override
@@ -221,19 +238,19 @@ class _PatientFormState extends State<PatientForm> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if (_patientFormKey.currentState!.validate()) {
-                      patient.fName = fNameController.text;
-                      patient.lName = lNameController.text;
-                      patient.bDay = bDayController.text;
-                      patient.height = heightController.text;
-                      patient.weight = weightController.text;
-                      patient.sex = sexController.text;
+                      user.patient.fName = fNameController.text;
+                      user.patient.lName = lNameController.text;
+                      user.patient.bDay = bDayController.text;
+                      user.patient.height = heightController.text;
+                      user.patient.weight = weightController.text;
+                      user.patient.sex = sexController.text;
 //                      createPatient(patient);
 
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return BedsoreForm(patient: patient);
+                            return BedsoreForm(user: user);
                           },
                         ),
                       );

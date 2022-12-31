@@ -5,8 +5,8 @@ import 'patients.dart';
 import 'fall_form.dart';
 
 class BedsoreForm extends StatefulWidget {
-  final Patient patient;
-  const BedsoreForm({super.key, required this.patient});
+  final User user;
+  const BedsoreForm({super.key, required this.user});
 
   @override
   State<BedsoreForm> createState() => _BedsoreFormState();
@@ -15,7 +15,7 @@ class BedsoreForm extends StatefulWidget {
 class _BedsoreFormState extends State<BedsoreForm> {
   final _bedsoreFormKey = GlobalKey<FormBuilderState>();
 
-  List<String> sensationOptions = [
+  List<String> sensoryOptions = [
     'Unresponsive',
     'Extensive Impairment',
     'Slight Impairment',
@@ -56,15 +56,6 @@ class _BedsoreFormState extends State<BedsoreForm> {
     'Independent',
   ];
 
-  int sensationScore = 0;
-  int moistureScore = 0;
-  int activityScore = 0;
-  int mobilityScore = 0;
-  int nutritionScore = 0;
-  int assistanceScore = 0;
-
-  int bRisk = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,19 +74,19 @@ class _BedsoreFormState extends State<BedsoreForm> {
               selectedColor: Colors.blue,
               options: [
                 FormBuilderChipOption(
-                  value: sensationOptions[3],
+                  value: sensoryOptions[3],
                   avatar: const Icon(Icons.sentiment_satisfied_outlined),
                 ),
                 FormBuilderChipOption(
-                  value: sensationOptions[2],
+                  value: sensoryOptions[2],
                   avatar: const Icon(Icons.sentiment_neutral_outlined),
                 ),
                 FormBuilderChipOption(
-                  value: sensationOptions[1],
+                  value: sensoryOptions[1],
                   avatar: const Icon(Icons.sentiment_dissatisfied_outlined),
                 ),
                 FormBuilderChipOption(
-                  value: sensationOptions[0],
+                  value: sensoryOptions[0],
                   avatar: const Icon(Icons.close),
                 ),
               ],
@@ -103,7 +94,8 @@ class _BedsoreFormState extends State<BedsoreForm> {
                 if (value == null) {
                   return 'Select One';
                 }
-                sensationScore = sensationOptions.indexOf(value) + 1;
+                widget.user.bScores.sensoryScore =
+                    sensoryOptions.indexOf(value) + 1;
                 return null;
               },
             ),
@@ -135,7 +127,8 @@ class _BedsoreFormState extends State<BedsoreForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                moistureScore = moistureOptions.indexOf(value) + 1;
+                widget.user.bScores.moistureScore =
+                    moistureOptions.indexOf(value) + 1;
                 return null;
               },
             ),
@@ -167,7 +160,8 @@ class _BedsoreFormState extends State<BedsoreForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                activityScore = activityOptions.indexOf(value) + 1;
+                widget.user.bScores.activityScore =
+                    activityOptions.indexOf(value) + 1;
                 return null;
               },
             ),
@@ -199,7 +193,8 @@ class _BedsoreFormState extends State<BedsoreForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                mobilityScore = mobilityOptions.indexOf(value) + 1;
+                widget.user.bScores.mobilityScore =
+                    mobilityOptions.indexOf(value) + 1;
                 return null;
               },
             ),
@@ -231,7 +226,8 @@ class _BedsoreFormState extends State<BedsoreForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                nutritionScore = nutritionOptions.indexOf(value) + 1;
+                widget.user.bScores.nutritionScore =
+                    nutritionOptions.indexOf(value) + 1;
                 return null;
               },
             ),
@@ -259,26 +255,27 @@ class _BedsoreFormState extends State<BedsoreForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                assistanceScore = assistanceOptions.indexOf(value) + 1;
+                widget.user.bScores.assistanceScore =
+                    assistanceOptions.indexOf(value) + 1;
                 return null;
               },
             ),
             ElevatedButton(
               onPressed: () {
                 if (_bedsoreFormKey.currentState!.validate()) {
-                  bRisk = sensationScore +
-                      moistureScore +
-                      activityScore +
-                      mobilityScore +
-                      nutritionScore +
-                      assistanceScore;
-                  widget.patient.bRisk = bRisk.toString();
+                  widget.user.patient.bRisk =
+                      (widget.user.bScores.sensoryScore +
+                              widget.user.bScores.moistureScore +
+                              widget.user.bScores.activityScore +
+                              widget.user.bScores.mobilityScore +
+                              widget.user.bScores.nutritionScore +
+                              widget.user.bScores.assistanceScore)
+                          .toString();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        print(bRisk);
-                        return const FallForm();
+                        return FallForm(user: widget.user);
                       },
                     ),
                   );

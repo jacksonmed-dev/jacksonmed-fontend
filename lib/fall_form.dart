@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+import 'patients.dart';
+
 class FallForm extends StatefulWidget {
-  const FallForm({super.key});
+  final User user;
+  const FallForm({super.key, required this.user});
 
   @override
   State<FallForm> createState() => _FallFormState();
@@ -12,42 +15,26 @@ class _FallFormState extends State<FallForm> {
   final _bedsoreFormKey = GlobalKey<FormBuilderState>();
 
   List<String> yesNo = [
-    'No', //cancel
-    'Yes', //check circle
+    'No',
+    'Yes',
   ];
 
-  //has [name] fallen in the last 3 months?
-  //does [name] have more than 1 existing medical diagnosis?
-  //does [name] currently have an IV?
-
   List<String> aidOptions = [
-    //does [name] require assistance to walk?
     'None OR Wheelchair OR Bedridden',
     'Uses a Walking Device',
     'Relies on Furniture for Support',
   ];
 
   List<String> mobilityOptions = [
-    //What is the quality of [name's] gait and balance?
     'Good or Immobile',
     'Stooped Posture',
     'Shuffles Steps',
   ];
 
   List<String> mentalOptions = [
-    //what is the mental status of [name]?
-    'Aware and Coherent', //psychology
-    'Confused and/or Forgetful', //psychology alt or question mark
+    'Aware and Coherent',
+    'Confused and/or Forgetful',
   ];
-
-  int historyScore = 0;
-  int secondaryScore = 0;
-  int aidScore = 0;
-  int ivScore = 0;
-  int mobilityScore = 0;
-  int mentalScore = 0;
-
-  int fRisk = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +66,7 @@ class _FallFormState extends State<FallForm> {
                 if (value == null) {
                   return 'Select One';
                 }
-                historyScore = yesNo.indexOf(value) * 25;
+                widget.user.fScores.historyScore = yesNo.indexOf(value) * 25;
                 return null;
               },
             ),
@@ -104,7 +91,7 @@ class _FallFormState extends State<FallForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                secondaryScore = yesNo.indexOf(value) * 15;
+                widget.user.fScores.secondaryScore = yesNo.indexOf(value) * 15;
                 return null;
               },
             ),
@@ -132,7 +119,7 @@ class _FallFormState extends State<FallForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                aidScore = aidOptions.indexOf(value) * 15;
+                widget.user.fScores.aidScore = aidOptions.indexOf(value) * 15;
                 return null;
               },
             ),
@@ -156,7 +143,7 @@ class _FallFormState extends State<FallForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                ivScore = yesNo.indexOf(value) * 20;
+                widget.user.fScores.ivScore = yesNo.indexOf(value) * 20;
                 return null;
               },
             ),
@@ -184,7 +171,8 @@ class _FallFormState extends State<FallForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                mobilityScore = mobilityOptions.indexOf(value) * 10;
+                widget.user.fScores.mobilityScore =
+                    mobilityOptions.indexOf(value) * 10;
                 return null;
               },
             ),
@@ -208,26 +196,27 @@ class _FallFormState extends State<FallForm> {
                 if (value == null) {
                   return 'Invalid';
                 }
-                mentalScore = mentalOptions.indexOf(value) * 15;
+                widget.user.fScores.mentalScore =
+                    mentalOptions.indexOf(value) * 15;
                 return null;
               },
             ),
             ElevatedButton(
               onPressed: () {
                 if (_bedsoreFormKey.currentState!.validate()) {
-                  fRisk = historyScore +
-                      secondaryScore +
-                      aidScore +
-                      ivScore +
-                      mobilityScore +
-                      mentalScore;
+                  widget.user.patient.fRisk =
+                      (widget.user.fScores.historyScore +
+                              widget.user.fScores.secondaryScore +
+                              widget.user.fScores.aidScore +
+                              widget.user.fScores.ivScore +
+                              widget.user.fScores.mobilityScore +
+                              widget.user.fScores.mentalScore)
+                          .toString();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        print(fRisk);
                         return const Text('');
-//                        return const FallForm();
                       },
                     ),
                   );

@@ -13,7 +13,7 @@ class FacilityView extends StatefulWidget {
 
 class _FacilityViewState extends State<FacilityView> {
   final facilityName = 'Jackson Medical Solutions';
-  List<Patient> patients = [];
+//  List<User> users = [];
 
   @override
   Widget build(BuildContext context) {
